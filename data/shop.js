@@ -223,9 +223,9 @@ window.MAYHEM = {
       type: "buttonup",
       quotation: "quotation-001",
       status: "open",
-      price: null,
+      price: 100,
       available: null,
-      stripeLink: null,
+      stripeLink: "https://buy.stripe.com/14A00i1w98tDb03cKz2ZO01",
       colours: [
         { name: "Ultra Black", number: "QMBUUB", band: "#1b1b1b", image: "assets/products/QMBUUB.jpg", back: "assets/products/QMBUUB-back.jpg" },
         { name: "Ultra White", number: "QMBUUW", band: "#ecebe7", image: "assets/products/QMBUUW.jpg", back: "assets/products/QMBUUW-back.jpg" }
@@ -237,9 +237,9 @@ window.MAYHEM = {
       type: "hoodie",
       quotation: "quotation-001",
       status: "open",
-      price: null,
+      price: 120,
       available: null,
-      stripeLink: null,
+      stripeLink: "https://buy.stripe.com/7sY28q4Il9xH5FJh0P2ZO02",
       colours: [
         { name: "Now With No Pink Tax Pink", number: "QMHNWNPTP", band: "#b80d5e", image: "assets/products/QMHNWNPTP.jpg", back: "assets/products/QMHNWNPTP-back.jpg" }
       ]

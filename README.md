@@ -88,7 +88,7 @@ For every product:
 
 1. **Quantity:** locked to 1.
 2. **Custom fields:** a dropdown for Size (S, M, L, XL, 2XL) and a dropdown for Colour (the colour names). You get up to 3 custom fields.
-3. **Shipping and inspection:** add a required **line item** "Canada Post Shipping (Checkpoint Skipped)" C$35. Then use **+ Add recommended products** to add "Checkpoint Inspection" C$5 as an optional item the customer can add. Don't use Stripe's shipping options: those can't be edited on a live link, and a new link resets the cap count. Line items and optional items can be edited on a live link. Keep the names and prices matching `shipping` in `data/shop.js`.
+3. **Shipping and inspection:** add a required **line item** "Canada Post Shipping (Sealed)" C$35. Then use **+ Add recommended products** to add "Checkpoint Inspection" C$5 as an optional item the customer can add. Don't use Stripe's shipping options: those can't be edited on a live link, and a new link resets the cap count. Line items and optional items can be edited on a live link. Keep the names and prices matching `shipping` in `data/shop.js`.
 4. **Addresses:** collect shipping address, Canada only.
 5. **Limit the number of payments:** this is the cap. It's per link, so per product, not per size or colour.
 6. **Terms:** turn on the "agree to terms" checkbox and point it at your policy page (`https://<your site>/policy.html`).

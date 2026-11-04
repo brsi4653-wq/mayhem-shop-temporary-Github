@@ -483,7 +483,7 @@
     var rows = [];
     var sp = shipping.price, ip = shipping.inspectionPrice;
     if (p) rows.push(["<span>" + esc(p.name) + '<span class="sub">Size and colour picked at checkout</span></span>', money(p.price) || "TBA"]);
-    rows.push([esc(shipping.name || "Canada Post Shipping") + '<span class="sub">Required. Ships uninspected unless you add the inspection below.</span>', money(sp) || "TBA"]);
+    rows.push([esc(shipping.name || "Canada Post Shipping") + '<span class="sub">Required. Ships Sealed, as it comes from the producer, unless you add the inspection below.</span>', money(sp) || "TBA"]);
     rows.push([esc(shipping.inspectionName || "Checkpoint Inspection") + ' <span class="opt mono">Optional</span><span class="sub">Add it at checkout. We check your piece before it ships.</span>', ip ? "+" + money(ip) : "TBA"]);
     var html = "<table class=\"lines\"><tbody>" + rows.map(function (r) {
       return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td></tr>";
@@ -491,7 +491,7 @@
     var base = p ? (isNum(p.price) && isNum(sp) ? p.price + sp : null) : (isNum(sp) ? sp : null);
     var lbl = p ? "Total (CAD)" : "Shipping, per item";
     html += '<tr class="total"><td>' + lbl + ', with inspection</td><td>' + esc(isNum(base) && isNum(ip) ? money(base + ip) : "TBA") + "</td></tr>";
-    html += '<tr class="total total--alt"><td>' + lbl + ', Checkpoint Skipped</td><td>' + esc(isNum(base) ? money(base) : "TBA") + "</td></tr>";
+    html += '<tr class="total total--alt"><td>' + lbl + ', Sealed</td><td>' + esc(isNum(base) ? money(base) : "TBA") + "</td></tr>";
     html += "</tbody></table>";
     if (D.taxNote) html += '<p class="fine" style="margin-top:8px">' + esc(D.taxNote) + "</p>";
     el.innerHTML = html;

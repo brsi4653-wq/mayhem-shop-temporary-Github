@@ -63,7 +63,7 @@ window.MAYHEM = {
      The names here should match the names in Stripe.
      ------------------------------------------------------------------ */
   shipping: {
-    name: "Canada Post Shipping (Checkpoint Skipped)",
+    name: "Canada Post Shipping (Sealed)",
     price: 35,
     inspectionName: "Checkpoint Inspection",
     inspectionPrice: 5

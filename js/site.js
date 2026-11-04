@@ -1,6 +1,6 @@
 /*
   Mayhem site script. You shouldn't need to edit this file.
-  Everything about products and drops lives in data/shop.js.
+  Everything about products and quotations lives in data/shop.js.
 */
 (function () {
   "use strict";
@@ -76,7 +76,7 @@
 
   /* ---------------- data access ---------------- */
 
-  var drops = Array.isArray(D.drops) ? D.drops : [];
+  var drops = Array.isArray(D.quotations) ? D.quotations : (Array.isArray(D.drops) ? D.drops : []);
   var products = Array.isArray(D.products) ? D.products : [];
   var presets = D.presets || {};
   var shipping = D.shipping || {};
@@ -85,7 +85,9 @@
     for (var i = 0; i < drops.length; i++) if (drops[i] && drops[i].id === id) return drops[i];
     return null;
   }
-  function currentDrop() { return dropById(D.currentDrop) || drops[0] || null; }
+  // a product says which quotation it belongs to
+  function pDrop(p) { return p ? (p.quotation || p.drop) : null; }
+  function currentDrop() { return dropById(D.currentQuotation || D.currentDrop) || drops[0] || null; }
 
   function dropState(drop) {
     if (!drop) return { state: "none" };
@@ -110,7 +112,7 @@
 
   function visibleProducts(dropId) {
     return products.filter(function (p) {
-      return p && p.status !== "hidden" && (!dropId || p.drop === dropId);
+      return p && p.status !== "hidden" && (!dropId || pDrop(p) === dropId);
     }).map(full);
   }
 
@@ -133,7 +135,7 @@
     if (p.status === "soldout") return { ok: false, label: "Sold out" };
     if (p.status === "closed") return { ok: false, label: "Pre-orders closed" };
     if (p.status === "upcoming") {
-      var ds = dropState(dropById(p.drop));
+      var ds = dropState(dropById(pDrop(p)));
       if (ds.state === "upcoming" && ds.open) return { ok: false, label: "Opens " + shortDate(ds.open) };
       return { ok: false, label: "Coming soon" };
     }
@@ -277,7 +279,7 @@
   function renderShop() {
     var drop = currentDrop();
     var nameEl = $("#drop-name");
-    if (nameEl) nameEl.textContent = drop && drop.name ? drop.name : "Next drop";
+    if (nameEl) nameEl.textContent = drop && drop.name ? drop.name : "Next quotation";
 
     var shipsEl = $("#drop-ships");
     var ships = drop ? halifax(drop.shipsBy) : null;
@@ -463,7 +465,7 @@
     }
 
     document.title = p.name + ' | Mayhem "Loves You"';
-    var drop = dropById(p.drop);
+    var drop = dropById(pDrop(p));
     var ships = drop ? halifax(drop.shipsBy) : null;
 
     var gallery = p.colours.filter(function (c) { return c.image; }).map(function (c, i) {
@@ -521,7 +523,7 @@
       s.innerHTML = d ? "<li><b>" + esc(d.name) + "</b>: pre-orders " +
         (o ? "open " + esc(fmtDateTime(o)) : "open date TBA") + ", " +
         (cl ? "close " + esc(fmtDateTime(cl)) : "close date TBA") + ", " +
-        (ds ? "ships by " + esc(fmtDate(ds)) : "ships-by date TBA") + ".</li>" : "<li>Next drop dates TBA.</li>";
+        (ds ? "ships by " + esc(fmtDate(ds)) : "ships-by date TBA") + ".</li>" : "<li>Next quotation dates TBA.</li>";
     }
     var pb = $(".print-btn");
     if (pb) pb.addEventListener("click", function () { window.print(); });
@@ -580,6 +582,34 @@
     setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 1800);
   }
 
+  // the ticker repeats its phrase until it's wider than the screen,
+  // then shows that twice so the loop never runs out
+  function fillTicker() {
+    var track = $(".ticker__track");
+    if (!track) return;
+    var item = track.querySelector(".ticker__item");
+    if (!item) return;
+    var base = item.outerHTML;
+    function build() {
+      track.innerHTML = base;
+      var one = track.firstElementChild.getBoundingClientRect().width || 600;
+      var need = Math.ceil((window.innerWidth + 200) / one);
+      var half = "";
+      for (var i = 0; i < Math.max(1, need); i++) half += base;
+      track.innerHTML = half + half;
+      // same speed on every screen: about 60px a second
+      track.style.animationDuration = Math.max(10, (one * Math.max(1, need)) / 60) + "s";
+    }
+    build();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(build);
+    var lastW = window.innerWidth, t = null;
+    window.addEventListener("resize", function () {
+      if (window.innerWidth === lastW) return;
+      lastW = window.innerWidth;
+      clearTimeout(t); t = setTimeout(build, 200);
+    });
+  }
+
   /* ---------------- go ---------------- */
 
   intro();
@@ -592,6 +622,7 @@
   } catch (err) {
     if (window.console) console.error("Mayhem: something in data/shop.js didn't load right.", err);
   }
+  fillTicker();
   observe();
   scrollFx();
 })();

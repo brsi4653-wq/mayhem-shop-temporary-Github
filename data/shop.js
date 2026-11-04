@@ -64,19 +64,19 @@ window.MAYHEM = {
   taxNote: null,
 
   /* ------------------------------------------------------------------
-     DROPS
+     QUOTATIONS (Mayhem's name for a drop)
      id: short code used by products below. No spaces.
      opens / closes: Halifax time. null = not set yet.
      shipsBy: date only, Halifax time.
      The countdown on the site is display only. It does NOT turn off
      Stripe. Deactivate your Payment Links in Stripe yourself at close.
      ------------------------------------------------------------------ */
-  currentDrop: "drop-001",
+  currentQuotation: "quotation-001",
 
-  drops: [
+  quotations: [
     {
-      id: "drop-001",
-      name: "Drop 001",
+      id: "quotation-001",
+      name: "Quotation 001",
       opens: null,     // e.g. "2026-12-01 18:00"
       closes: null,    // e.g. "2026-12-15 23:59"
       shipsBy: null    // e.g. "2027-01-20"
@@ -172,7 +172,7 @@ window.MAYHEM = {
       id: "quotation-mayhem-tee",
       name: "Quotation Mayhem",
       type: "tee",
-      drop: "drop-001",
+      quotation: "quotation-001",
       status: "upcoming",
       price: null,
       available: null,
@@ -188,7 +188,7 @@ window.MAYHEM = {
       id: "quotation-mayhem-button-up",
       name: "Quotation Mayhem Button-up",
       type: "buttonup",
-      drop: "drop-001",
+      quotation: "quotation-001",
       status: "upcoming",
       price: null,
       available: null,
@@ -202,7 +202,7 @@ window.MAYHEM = {
       id: "quotation-mayhem-hoodie",
       name: "Quotation Mayhem Hoodie",
       type: "hoodie",
-      drop: "drop-001",
+      quotation: "quotation-001",
       status: "upcoming",
       price: null,
       available: null,

@@ -46,7 +46,7 @@ Copy an existing product block in `products`, paste it below, and change the fie
   id: "crash-tee",                 // used in the link: product.html?p=crash-tee
   name: "Crash",
   type: "tee",                     // tee, buttonup or hoodie
-  drop: "drop-002",
+  quotation: "quotation-002",
   status: "upcoming",
   price: null,
   available: null,
@@ -61,16 +61,16 @@ Put the image in `assets/products/`. Use just the garment, not the whole release
 
 If a product needs a detail that's different from its preset, add it to the product and it wins. For example `care: "Hand wash only."`.
 
-## Add a new drop
+## Add a new quotation (drop)
 
-Add a block to `drops`, then point `currentDrop` at it. The home page shows whatever `currentDrop` is.
+On the site, drops are called quotations: Quotation 001, Quotation 002 and so on. Add a block to `quotations`, then point `currentQuotation` at it. The home page shows whatever `currentQuotation` is. Each product says which one it belongs to with `quotation:`.
 
 ```js
-currentDrop: "drop-002",
+currentQuotation: "quotation-002",
 
-drops: [
-  { id: "drop-001", name: "Drop 001", opens: "2026-12-01 18:00", closes: "2026-12-15 23:59", shipsBy: "2027-01-20" },
-  { id: "drop-002", name: "Drop 002", opens: null, closes: null, shipsBy: null }
+quotations: [
+  { id: "quotation-001", name: "Quotation 001", opens: "2026-12-01 18:00", closes: "2026-12-15 23:59", shipsBy: "2027-01-20" },
+  { id: "quotation-002", name: "Quotation 002", opens: null, closes: null, shipsBy: null }
 ],
 ```
 
@@ -98,7 +98,7 @@ For every product:
 
 - [x] Address is filled in. Nova Scotia's internet sales rules require it. It only shows on the policy page, and until every piece is filled in the policy page shows a yellow "coming soon" box.
 - [ ] Decide how tax works for you and write it in `taxNote`.
-- [ ] Prices, caps, drop dates and Stripe links.
+- [ ] Prices, caps, quotation dates and Stripe links.
 - [ ] Fabric and care for the button-up and hoodie (in their presets).
 - [ ] Check the hoodie's style wording against the Tapstitch listing.
 - [ ] Get the policy page and the quote mark question checked by a lawyer.
@@ -117,7 +117,7 @@ In the repo on GitHub: **Settings, Pages**, set Source to "Deploy from a branch"
 | file | what it is |
 |---|---|
 | `data/shop.js` | **All the shop content.** The file you edit. |
-| `index.html` | Home: current drop, countdown, products, The Checkpoint |
+| `index.html` | Home: current quotation, countdown, products, The Checkpoint |
 | `product.html` | One product page (picks the product from `?p=`) |
 | `size-guide.html` | All the size charts |
 | `policy.html` | Policy and contact |

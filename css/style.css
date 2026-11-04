@@ -285,7 +285,7 @@ button { font: inherit; }
 }
 .heading__mark { flex: none; display: flex; gap: 0; width: clamp(26px, 5vw, 40px); margin-top: -2px; }
 .heading__mark .q { width: 100%; color: var(--pink); }
-.section--ink .heading__mark .q { color: var(--paper); }
+.section--ink .heading__mark .q { color: var(--pink); }
 .heading__mark .q {
   transform: translateY(-40%) rotate(-30deg) scale(0.4);
   opacity: 0;

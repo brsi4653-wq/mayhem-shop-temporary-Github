@@ -235,45 +235,116 @@
 
   /* ---------------- shop page ---------------- */
 
-  function tileHTML(p) {
-    var imgs = p.colours.filter(function (c) { return c.image; });
-    var media = imgs.length
-      ? imgs.map(function (c, i) {
-          return '<img src="' + esc(c.image) + '" alt="' + esc(p.name + " in " + c.name) + '" width="1000" height="1000"' + (i ? ' loading="lazy"' : "") + ">";
-        }).join("")
-      : '<div class="placeholder">' + q("open") + q("close") + "</div>";
-    var chips = p.colours.map(function (c) {
-      return '<li><span class="chip" style="background:' + esc(c.band || "#999") + '"></span>' + esc(c.name) + "</li>";
+  /* ---------------- image viewer ----------------
+     One image per product. The colour buttons switch which colour you're
+     looking at, and the arrow flips it to show the back. This is for
+     viewing only. Size and colour are still picked on Stripe.          */
+
+  var FLIP_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">' +
+    '<path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7M20 4v4.7h-4.7M20 12a8 8 0 0 1-13.7 5.6L4 15.3M4 20v-4.7h4.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function viewerStage(p, href, start) {
+    var c = p.colours[start] || p.colours[0];
+    if (!c || !c.image) {
+      var ph = '<div class="viewer__card"><div class="placeholder">' + q("open") + q("close") + "</div></div>";
+      return href ? '<a class="viewer__link" href="' + href + '" aria-label="' + esc(p.name) + '">' + ph + "</a>" : ph;
+    }
+    var hasBack = p.colours.some(function (x) { return x.back; });
+    var card = '<div class="viewer__card">' +
+      '<img class="viewer__face viewer__face--front" src="' + esc(c.image) + '" alt="' + esc(p.name + " in " + c.name + ", front") + '" width="1000" height="1000">' +
+      '<img class="viewer__face viewer__face--back" src="' + esc(c.back || c.image) + '" alt="' + esc(p.name + " in " + c.name + ", back") + '" width="1000" height="1000" loading="lazy">' +
+      "</div>";
+    return (href ? '<a class="viewer__link" href="' + href + '" aria-label="' + esc(p.name) + '">' + card + "</a>" : card) +
+      (hasBack ? '<button type="button" class="viewer__flip" aria-pressed="false" aria-label="Show the back">' + FLIP_ICON + '<span class="viewer__flip-label">Back</span></button>' : "");
+  }
+
+  function swatchButtons(p, withNumbers) {
+    return p.colours.map(function (c, i) {
+      return '<button type="button" class="swatch" data-colour="' + i + '" aria-pressed="' + (i === 0) + '">' +
+        '<span class="chip" style="background:' + esc(c.band || "#999") + '"></span>' +
+        '<span class="swatch__name">' + esc(c.name) + "</span>" +
+        (withNumbers && c.number ? '<span class="num mono">' + esc(c.number) + "</span>" : "") +
+        "</button>";
     }).join("");
+  }
+
+  // wires up every [data-viewer] block inside root
+  function bindViewers(root, products) {
+    Array.prototype.forEach.call((root || document).querySelectorAll("[data-viewer]"), function (box) {
+      var p = products[box.getAttribute("data-viewer")];
+      if (!p) return;
+      var stage = box.querySelector(".viewer");
+      var front = box.querySelector(".viewer__face--front");
+      var back = box.querySelector(".viewer__face--back");
+      var flip = box.querySelector(".viewer__flip");
+      var label = box.querySelector(".viewer__flip-label");
+      var swatches = box.querySelectorAll(".swatch");
+      var state = p._view || (p._view = { colour: 0, back: false });
+
+      function show() {
+        var c = p.colours[state.colour] || p.colours[0];
+        if (!c || !front) return;
+        var hasBack = !!c.back;
+        if (!hasBack) state.back = false;
+        if (front.getAttribute("src") !== c.image) {
+          stage.classList.add("is-swapping");
+          front.onload = function () { stage.classList.remove("is-swapping"); };
+          front.src = c.image;
+        }
+        if (back) { back.src = c.back || c.image; back.alt = p.name + " in " + c.name + ", back"; }
+        front.alt = p.name + " in " + c.name + ", front";
+        stage.classList.toggle("is-back", state.back);
+        if (flip) {
+          flip.hidden = !hasBack;
+          flip.setAttribute("aria-pressed", String(state.back));
+          flip.setAttribute("aria-label", state.back ? "Show the front" : "Show the back");
+          if (label) label.textContent = state.back ? "Front" : "Back";
+        }
+        Array.prototype.forEach.call(swatches, function (s) {
+          s.setAttribute("aria-pressed", String(+s.getAttribute("data-colour") === state.colour));
+        });
+      }
+
+      if (flip) flip.addEventListener("click", function (e) {
+        e.preventDefault(); e.stopPropagation();
+        state.back = !state.back; show();
+      });
+      Array.prototype.forEach.call(swatches, function (s) {
+        s.addEventListener("click", function () { state.colour = +s.getAttribute("data-colour"); show(); });
+        // warm the cache so switching feels instant
+        s.addEventListener("pointerenter", function () {
+          var c = p.colours[+s.getAttribute("data-colour")];
+          if (c) { if (c.image) new Image().src = c.image; if (c.back) new Image().src = c.back; }
+        }, { once: true });
+      });
+      show();
+    });
+  }
+
+  var tileProducts = {};
+
+  function tileHTML(p, idx) {
+    var key = "t" + idx;
+    tileProducts[key] = p;
     var href = "product.html?p=" + encodeURIComponent(p.id || "");
-    return '<article class="tile reveal">' +
-      '<a class="tile__media" href="' + href + '" aria-label="' + esc(p.name) + '">' + media +
+    return '<article class="tile reveal" data-viewer="' + key + '">' +
+      '<div class="tile__media viewer">' + viewerStage(p, href, 0) +
         '<span class="tile__corner tile__corner--tl" aria-hidden="true">' + q("open") + "</span>" +
         '<span class="tile__corner tile__corner--br" aria-hidden="true">' + q("close") + "</span>" +
-      "</a>" +
+      "</div>" +
       '<div class="tile__body">' +
         '<h3 class="tile__name"><a href="' + href + '">' + esc(p.name) + "</a></h3>" +
         '<div class="tile__row"><span class="tile__price">' + esc(priceText(p)) + "</span>" +
           (availText(p) ? '<span class="tile__avail mono">' + esc(availText(p)) + "</span>" : "") + "</div>" +
-        (chips ? '<ul class="chips" aria-label="Colours">' + chips + "</ul>" : "") +
+        (p.colours.length ? '<div class="swatches" role="group" aria-label="View colour">' + swatchButtons(p, false) + "</div>" : "") +
         '<div class="tile__foot">' + buyButton(p) + policyLine() + "</div>" +
       "</div></article>";
   }
 
-  // tiles with several colours slowly cycle through their images
-  function cycleTiles() {
-    if (reduceMotion) return;
-    Array.prototype.forEach.call(document.querySelectorAll(".tile__media"), function (m) {
-      var imgs = m.querySelectorAll("img");
-      if (imgs.length < 2) return;
-      // the first image sits underneath; the others fade in on top of it
-      var i = 0;
-      setInterval(function () {
-        if (document.hidden) return;
-        i = (i + 1) % imgs.length;
-        for (var j = 1; j < imgs.length; j++) imgs[j].style.opacity = j === i ? "1" : "0";
-      }, 3200 + Math.random() * 1200);
-    });
+  function drawTiles(grid, list) {
+    tileProducts = {};
+    grid.innerHTML = list.map(tileHTML).join("");
+    bindViewers(grid, tileProducts);
   }
 
   function renderShop() {
@@ -290,15 +361,13 @@
     var grid = $("#product-grid");
     if (grid) {
       var list = visibleProducts(drop ? drop.id : null);
-      grid.innerHTML = list.length
-        ? list.map(tileHTML).join("")
-        : '<div class="empty" style="grid-column:1/-1">' + q("open") + "<p>Nothing here yet.</p>" + q("close") + "</div>";
+      if (list.length) drawTiles(grid, list);
+      else grid.innerHTML = '<div class="empty" style="grid-column:1/-1">' + q("open") + "<p>Nothing here yet.</p>" + q("close") + "</div>";
     }
     var title = $("#shop-title");
     if (title && drop && drop.name) title.textContent = drop.name;
 
     renderShippingLines($("#ship-lines"), null);
-    cycleTiles();
   }
 
   function startCountdown(drop) {
@@ -354,7 +423,7 @@
     var grid = $("#product-grid"), drop = currentDrop();
     if (grid) {
       var list = visibleProducts(drop ? drop.id : null);
-      if (list.length) { grid.innerHTML = list.map(tileHTML).join(""); observe(); }
+      if (list.length) { drawTiles(grid, list); observe(); }
     }
   }
 
@@ -468,27 +537,24 @@
     var drop = dropById(pDrop(p));
     var ships = drop ? halifax(drop.shipsBy) : null;
 
-    var gallery = p.colours.filter(function (c) { return c.image; }).map(function (c, i) {
-      return '<figure><img src="' + esc(c.image) + '" alt="' + esc(p.name + " in " + c.name) + '" width="1000" height="1000"' + (i ? ' loading="lazy"' : "") + "><figcaption>" + esc(c.name) + "</figcaption></figure>";
-    }).join("") || '<figure><div class="placeholder">' + q("open") + q("close") + "</div></figure>";
-
-    var colours = p.colours.map(function (c) {
-      return '<li><span class="chip" style="background:' + esc(c.band || "#999") + '"></span><span>' + esc(c.name) + '</span><span class="num mono">' + esc(c.number || "") + "</span></li>";
-    }).join("");
+    var colours = p.colours.length
+      ? '<div class="swatches swatches--list" role="group" aria-label="View colour">' + swatchButtons(p, true) + "</div>" +
+        '<p class="fine swatches__note">Tap a colour to see it. You pick yours at checkout.</p>'
+      : "";
 
     var specs = p.details.map(function (r) { return "<tr><th scope=\"row\">" + esc(r[0]) + "</th><td>" + esc(r[1]) + "</td></tr>"; }).join("");
     var sizes = p.sizeChart ? Object.keys(p.sizeChart).join(", ") : null;
     if (sizes) specs += '<tr><th scope="row">Sizes</th><td>' + esc(sizes) + "</td></tr>";
 
     function draw() {
-      el.innerHTML = '<div class="wrap"><div class="product__layout">' +
-        '<div class="gallery">' + gallery + "</div>" +
+      el.innerHTML = '<div class="wrap"><div class="product__layout" data-viewer="p">' +
+        '<div class="product__media viewer">' + viewerStage(p, null, (p._view && p._view.colour) || 0) + "</div>" +
         '<div class="product__info">' +
           '<p class="crumbs mono"><a href="index.html">Shop</a> / ' + esc(drop && drop.name ? drop.name : (presets[p.type] && presets[p.type].label) || "") + "</p>" +
           '<h1 class="product__title">' + esc(p.name) + "</h1>" +
           '<p class="product__price">' + esc(priceText(p)) + "</p>" +
           (availText(p) ? '<p class="product__avail mono">' + esc(availText(p)) + "</p>" : "") +
-          (colours ? '<ul class="colours" aria-label="Colours">' + colours + "</ul>" : "") +
+          colours +
 
           '<div class="buybox">' +
             '<p class="buybox__note">Pick your size and colour on the checkout page. One item per order.</p>' +
@@ -504,6 +570,7 @@
         "</div>" +
       "</div></div>";
       renderShippingLines($("#buy-lines"), p);
+      bindViewers(el, { p: p });
       bindToggles(draw);
     }
     draw();

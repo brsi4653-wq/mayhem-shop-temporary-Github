@@ -52,12 +52,12 @@ Copy an existing product block in `products`, paste it below, and change the fie
   available: null,
   stripeLink: null,
   colours: [
-    { name: "Ultra Washed Black", number: "CUWB", band: "#1b1b1b", image: "assets/products/CUWB.jpg" }
+    { name: "Ultra Washed Black", number: "CUWB", band: "#1b1b1b", image: "assets/products/CUWB.jpg", back: "assets/products/CUWB-back.jpg" }
   ]
 },
 ```
 
-Put the image in `assets/products/`. Use just the garment, not the whole release card: a square JPG about 1000 x 1000 on a white background, with no logo, colour band or back thumbnail. Small files load fast on phones.
+Put the images in `assets/products/`: one for the front (`image`) and one for the back (`back`). On the site, each product shows one image. The colour names switch which colour you're looking at, and the arrow button flips it to the back. Leave `back` out and the arrow is hidden. The front and back PNGs from your Tapstitch mockup zips are perfect for this. Use just the garment, not the whole release card: a square JPG about 1000 x 1000 on a white background, with no logo, colour band or back thumbnail. Small files load fast on phones.
 
 If a product needs a detail that's different from its preset, add it to the product and it wins. For example `care: "Hand wash only."`.
 

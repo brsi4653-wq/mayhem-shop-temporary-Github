@@ -165,7 +165,8 @@ window.MAYHEM = {
      stripeLink: the Stripe Payment Link URL, or null.
      The buy button only works when status is "open" AND there's a
      price AND a Stripe link.
-     colours: name, product number, band colour, image.
+     colours: name, product number, band colour, front image, back image.
+       back is optional. Leave it out and the flip arrow is hidden.
      ------------------------------------------------------------------ */
   products: [
     {
@@ -178,10 +179,10 @@ window.MAYHEM = {
       available: null,
       stripeLink: null,
       colours: [
-        { name: "Ultra Washed Black", number: "QMUWB", band: "#1b1b1b", image: "assets/products/QMUWB.jpg" },
-        { name: "Legally Distinct White-Ish Colour", number: "QMLDWC", band: "#e7dac6", image: "assets/products/QMLDWC.jpg" },
-        { name: "What The Tree Trunk Green", number: "QMWTTTG", band: "#23483e", image: "assets/products/QMWTTTG.jpg" },
-        { name: "Ultra Specific Blue", number: "QMUSB", band: "#222c49", image: "assets/products/QMUSB.jpg" }
+        { name: "Ultra Washed Black", number: "QMUWB", band: "#1b1b1b", image: "assets/products/QMUWB.jpg", back: "assets/products/QMUWB-back.jpg" },
+        { name: "Legally Distinct White-Ish Colour", number: "QMLDWC", band: "#e7dac6", image: "assets/products/QMLDWC.jpg", back: "assets/products/QMLDWC-back.jpg" },
+        { name: "What The Tree Trunk Green", number: "QMWTTTG", band: "#23483e", image: "assets/products/QMWTTTG.jpg", back: "assets/products/QMWTTTG-back.jpg" },
+        { name: "Ultra Specific Blue", number: "QMUSB", band: "#222c49", image: "assets/products/QMUSB.jpg", back: "assets/products/QMUSB-back.jpg" }
       ]
     },
     {
@@ -194,8 +195,8 @@ window.MAYHEM = {
       available: null,
       stripeLink: null,
       colours: [
-        { name: "Ultra Black", number: "QMBUUB", band: "#1b1b1b", image: "assets/products/QMBUUB.jpg" },
-        { name: "Ultra White", number: "QMBUUW", band: "#ecebe7", image: "assets/products/QMBUUW.jpg" }
+        { name: "Ultra Black", number: "QMBUUB", band: "#1b1b1b", image: "assets/products/QMBUUB.jpg", back: "assets/products/QMBUUB-back.jpg" },
+        { name: "Ultra White", number: "QMBUUW", band: "#ecebe7", image: "assets/products/QMBUUW.jpg", back: "assets/products/QMBUUW-back.jpg" }
       ]
     },
     {
@@ -208,7 +209,7 @@ window.MAYHEM = {
       available: null,
       stripeLink: null,
       colours: [
-        { name: "Now With No Pink Tax Pink", number: "QMHNWNPTP", band: "#b80d5e", image: "assets/products/QMHNWNPTP.jpg" }
+        { name: "Now With No Pink Tax Pink", number: "QMHNWNPTP", band: "#b80d5e", image: "assets/products/QMHNWNPTP.jpg", back: "assets/products/QMHNWNPTP-back.jpg" }
       ]
     }
   ]

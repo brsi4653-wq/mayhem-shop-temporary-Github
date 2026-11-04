@@ -359,7 +359,7 @@
       return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td></tr>";
     }).join("");
     if (p) html += '<tr class="total"><td>Total (CAD)</td><td>' + esc(total) + "</td></tr>";
-    else html += '<tr class="total"><td>Shipping total, per order</td><td>' + esc(money(st) || "TBA") + "</td></tr>";
+    else html += '<tr class="total"><td>Shipping total, per item</td><td>' + esc(money(st) || "TBA") + "</td></tr>";
     html += "</tbody></table>";
     if (D.taxNote) html += '<p class="fine" style="margin-top:8px">' + esc(D.taxNote) + "</p>";
     el.innerHTML = html;

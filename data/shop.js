@@ -209,7 +209,7 @@ window.MAYHEM = {
       status: "open",
       price: 70,
       available: null,
-      stripeLink: null,
+      stripeLink: "https://buy.stripe.com/8x26oGdeRbFPfgj7qf2ZO00",
       colours: [
         { name: "Ultra Washed Black", number: "QMUWB", band: "#1b1b1b", image: "assets/products/QMUWB.jpg", back: "assets/products/QMUWB-back.jpg" },
         { name: "Legally Distinct White-Ish Colour", number: "QMLDWC", band: "#e7dac6", image: "assets/products/QMLDWC.jpg", back: "assets/products/QMLDWC-back.jpg" },

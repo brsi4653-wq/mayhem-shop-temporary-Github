@@ -96,12 +96,11 @@ For every product:
 
 ## Before launch
 
-- [ ] Add your mailing address to `contact.mailingAddress`. Nova Scotia's internet sales rules require it. Until then, the policy page shows a yellow "coming soon" box.
+- [ ] Fill in every piece of `contact.address` (the street name is still missing). Nova Scotia's internet sales rules require it. It only shows on the policy page, and until every piece is filled in the policy page shows a yellow "coming soon" box.
 - [ ] Decide how tax works for you and write it in `taxNote`.
 - [ ] Prices, caps, drop dates and Stripe links.
 - [ ] Fabric and care for the button-up and hoodie (in their presets).
 - [ ] Check the hoodie's style wording against the Tapstitch listing.
-- [ ] Hoodie is `"hidden"` until you decide which drop it's in.
 - [ ] Get the policy page and the quote mark question checked by a lawyer.
 
 ## Wording rules

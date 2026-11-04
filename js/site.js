@@ -170,7 +170,15 @@
 
   /* ---------------- contact (built at runtime) ---------------- */
 
-  function contactHTML() {
+  function addressText(a) {
+    if (!a || typeof a !== "object") return null;
+    var parts = [a.number, a.street, a.town, a.province, a.postal];
+    for (var i = 0; i < parts.length; i++) if (!parts[i]) return null;
+    return a.number + " " + a.street + ", " + a.town + " " + a.province + " " + a.postal;
+  }
+
+  // full = policy page (shows the address). The footer only links to it.
+  function contactHTML(full) {
     var c = D.contact || {};
     var email = c.emailUser && c.emailDomain ? c.emailUser + "@" + c.emailDomain : null;
     var phone = Array.isArray(c.phone) ? c.phone.join(" ") : null;
@@ -179,7 +187,12 @@
     rows.push(["Seller", esc(c.name || "Simon Brookes") + ", sole proprietor, selling as Mayhem"]);
     rows.push(["Email", email ? '<a href="mailto:' + esc(email) + '">' + esc(email) + "</a>" : '<span class="todo">Email TBA</span>']);
     rows.push(["Phone", phone ? '<a href="tel:' + esc(tel) + '">' + esc(phone) + "</a>" : '<span class="todo">Phone TBA</span>']);
-    rows.push(["Mailing address", c.mailingAddress ? esc(c.mailingAddress) : '<span class="todo">Mailing address coming soon</span>']);
+    if (full) {
+      var addr = addressText(c.address);
+      rows.push(["Address", addr ? esc(addr) : '<span class="todo">Address coming soon</span>']);
+    } else {
+      rows.push(["Address", '<a href="policy.html#contact">On the policy page</a>']);
+    }
     return '<dl class="contact">' + rows.map(function (r) {
       return "<div><dt>" + r[0] + "</dt><dd>" + r[1] + "</dd></div>";
     }).join("") + "</dl>" +
@@ -498,7 +511,7 @@
 
   function renderPolicy() {
     var c = $("#policy-contact");
-    if (c) c.innerHTML = contactHTML();
+    if (c) c.innerHTML = contactHTML(true);
     renderShippingLines($("#policy-ship"), null);
     var d = currentDrop();
     var s = $("#policy-drop");

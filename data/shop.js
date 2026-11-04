@@ -25,9 +25,22 @@ window.MAYHEM = {
     emailDomain: "icloud.com",
     phone: ["902", "899", "9245"],
 
-    // TODO: add your mailing address before launch. Nova Scotia's internet
-    // sales rules require it. Example: "123 Example St, Halifax NS B3H 0A0"
-    mailingAddress: null
+    // Your address. Nova Scotia's internet sales rules require it.
+    // To keep it as hidden as the law allows, the site:
+    //  - shows it ONLY on the policy page (linked from every buy button),
+    //    not in the footer of every page,
+    //  - builds it with JavaScript from these pieces, so basic bots
+    //    don't read it out of the page,
+    //  - tells search engines not to list the policy page.
+    // It still sits in this file, and the GitHub repo is public.
+    // Nothing shows until every piece is filled in.
+    address: {
+      number: null,        // TODO: house number
+      street: null,        // TODO: street name, e.g. "Example Street"
+      town: null,          // TODO: town
+      province: "NS",
+      postal: null         // TODO: postal code
+    }
   },
 
   /* ------------------------------------------------------------------
@@ -186,13 +199,11 @@ window.MAYHEM = {
       ]
     },
     {
-      // Hidden until you confirm which drop it's in and how many.
-      // Change status to "upcoming" to show it.
       id: "quotation-mayhem-hoodie",
       name: "Quotation Mayhem Hoodie",
       type: "hoodie",
       drop: "drop-001",
-      status: "hidden",
+      status: "upcoming",
       price: null,
       available: null,
       stripeLink: null,

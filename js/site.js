@@ -129,9 +129,21 @@
     return null;
   }
 
+  // only a real, full https:// address counts as a Stripe link
+  function validLink(u) {
+    if (typeof u !== "string" || !/^https:\/\/[^\s"'<>]+\.[^\s"'<>]+$/i.test(u.trim())) return false;
+    try { return new URL(u.trim()).protocol === "https:"; } catch (e) { return false; }
+  }
+
+  // the delivery line for a quotation, with its dates filled in
+  function deliveryText(drop) {
+    var d = drop && drop.delivery;
+    if (!d || typeof d.text !== "string" || !d.text) return null;
+    return d.text.replace(/\{shipsBy\}/g, d.shipsBy || "").replace(/\{arriveBy\}/g, d.arriveBy || "");
+  }
+
   // what the buy button should do for this product
   function buyState(p) {
-    var price = isNum(p.price);
     if (p.status === "soldout") return { ok: false, label: "Sold out" };
     if (p.status === "closed") return { ok: false, label: "Pre-orders closed" };
     if (p.status === "upcoming") {
@@ -140,8 +152,7 @@
       return { ok: false, label: "Coming soon" };
     }
     if (p.status === "open") {
-      if (!price) return { ok: false, label: "Price TBA" };
-      if (!p.stripeLink) return { ok: false, label: "Checkout coming soon" };
+      if (!validLink(p.stripeLink)) return { ok: false, label: "Link coming soon" };
       return { ok: true, label: "Pre-order", href: p.stripeLink };
     }
     return { ok: false, label: "Coming soon" };
@@ -154,14 +165,16 @@
   function buyButton(p, extra) {
     var s = buyState(p);
     var cls = "btn btn--block " + (extra || "");
-    if (s.ok && /^https:\/\//i.test(s.href)) {
-      return '<a class="' + cls + '" href="' + esc(s.href) + '" rel="noopener">' + quoted(esc(s.label)) + "</a>";
+    if (s.ok && validLink(s.href)) {
+      return '<a class="' + cls + '" href="' + esc(s.href.trim()) + '" rel="noopener">' + quoted(esc(s.label)) + "</a>";
     }
-    return '<span class="' + cls + '" role="link" aria-disabled="true">' + esc(s.label) + "</span>";
+    return '<span class="' + cls + '" role="link" aria-disabled="true">' + esc(s.ok ? "Link coming soon" : s.label) + "</span>";
   }
 
-  function policyLine() {
-    return '<p class="fine">All sales final. <a href="policy.html">Policy</a></p>';
+  function policyLine(p) {
+    var dt = deliveryText(dropById(pDrop(p)) || currentDrop());
+    return '<p class="fine">All sales final. <a href="policy.html">Policy</a>' +
+      (dt ? '<span class="fine__delivery"> ' + esc(dt) + "</span>" : "") + "</p>";
   }
 
   function priceText(p) { return money(p.price) || "Price TBA"; }
@@ -209,6 +222,23 @@
         '<span class="socials__name mono">' + esc(s.name) + "</span>" +
         '<span class="socials__handle">' + esc(s.handle || "") + "</span></a></li>";
     }).join("") + "</ul>";
+  }
+
+  // pink delivery bar fixed to the bottom of every page. The page gets
+  // bottom padding equal to the bar's height so nothing ends up behind it.
+  function renderBar() {
+    var dt = deliveryText(currentDrop());
+    if (!dt) return;
+    var bar = document.createElement("div");
+    bar.className = "delivery-bar";
+    bar.setAttribute("role", "note");
+    bar.textContent = dt;
+    document.body.appendChild(bar);
+    function fit() { document.documentElement.style.setProperty("--bar-h", bar.offsetHeight + "px"); }
+    fit();
+    if ("ResizeObserver" in window) new ResizeObserver(fit).observe(bar);
+    else window.addEventListener("resize", fit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   }
 
   /* ---------------- header and footer ---------------- */
@@ -348,7 +378,7 @@
         '<div class="tile__row"><span class="tile__price">' + esc(priceText(p)) + "</span>" +
           (availText(p) ? '<span class="tile__avail mono">' + esc(availText(p)) + "</span>" : "") + "</div>" +
         (p.colours.length ? '<div class="swatches" role="group" aria-label="View colour">' + swatchButtons(p, false) + "</div>" : "") +
-        '<div class="tile__foot">' + buyButton(p) + policyLine() + "</div>" +
+        '<div class="tile__foot">' + buyButton(p) + policyLine(p) + "</div>" +
       "</div></article>";
   }
 
@@ -364,8 +394,11 @@
     if (nameEl) nameEl.textContent = drop && drop.name ? drop.name : "Next quotation";
 
     var shipsEl = $("#drop-ships");
-    var ships = drop ? halifax(drop.shipsBy) : null;
-    if (shipsEl) shipsEl.textContent = ships ? "Ships by " + fmtDate(ships) : "Ships-by date TBA";
+    if (shipsEl) {
+      var dt = deliveryText(drop);
+      shipsEl.textContent = dt || "";
+      shipsEl.hidden = !dt;
+    }
 
     startCountdown(drop);
 
@@ -384,6 +417,9 @@
   function startCountdown(drop) {
     var box = $("#countdown");
     if (!box) return;
+    // switched off in data/shop.js with showCountdown: false
+    if (D.showCountdown === false) { box.hidden = true; box.innerHTML = ""; return; }
+    box.hidden = false;
     var ds = dropState(drop);
 
     if (ds.state === "tba" || ds.state === "none") {
@@ -546,7 +582,6 @@
 
     document.title = p.name + ' | Mayhem "Loves You"';
     var drop = dropById(pDrop(p));
-    var ships = drop ? halifax(drop.shipsBy) : null;
 
     var colours = p.colours.length
       ? '<div class="swatches swatches--list" role="group" aria-label="View colour">' + swatchButtons(p, true) + "</div>" +
@@ -571,8 +606,8 @@
             '<p class="buybox__note">Pick your size and colour on the checkout page. One item per order.</p>' +
             '<div id="buy-lines"></div>' +
             buyButton(p, "btn--pink") +
-            '<p class="fine">' + (ships ? "Ships by " + esc(fmtDate(ships)) + ". " : "Ships-by date TBA. ") + "Canada only.</p>" +
-            policyLine() +
+            '<p class="fine">Canada only.</p>' +
+            policyLine(p) +
           "</div>" +
 
           (specs ? '<div class="block"><h2>Details</h2><table class="specs"><tbody>' + specs + "</tbody></table></div>" : "") +
@@ -593,15 +628,11 @@
     var c = $("#policy-contact");
     if (c) c.innerHTML = contactHTML(true);
     renderShippingLines($("#policy-ship"), null);
-    var d = currentDrop();
-    var s = $("#policy-drop");
+    var s = $("#policy-delivery");
     if (s) {
-      var ds = d ? halifax(d.shipsBy) : null;
-      var o = d ? halifax(d.opens) : null, cl = d ? halifax(d.closes) : null;
-      s.innerHTML = d ? "<li><b>" + esc(d.name) + "</b>: pre-orders " +
-        (o ? "open " + esc(fmtDateTime(o)) : "open date TBA") + ", " +
-        (cl ? "close " + esc(fmtDateTime(cl)) : "close date TBA") + ", " +
-        (ds ? "ships by " + esc(fmtDate(ds)) : "ships-by date TBA") + ".</li>" : "<li>Next quotation dates TBA.</li>";
+      var dt = deliveryText(currentDrop());
+      s.textContent = dt || "";
+      s.hidden = !dt;
     }
     var pb = $(".print-btn");
     if (pb) pb.addEventListener("click", function () { window.print(); });
@@ -692,6 +723,7 @@
 
   intro();
   renderChrome();
+  renderBar();
   try {
     if (page === "shop") renderShop();
     if (page === "product") renderProduct();

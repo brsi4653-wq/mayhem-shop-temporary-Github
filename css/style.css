@@ -649,6 +649,19 @@ button { font: inherit; }
 .site-footer__q .q { width: 100%; }
 
 /* ------------------------------------------------------------------
+   DELIVERY BAR (fixed to the bottom of every page)
+   ------------------------------------------------------------------ */
+body { padding-bottom: var(--bar-h, 0px); }
+.delivery-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+  background: #B80D5E; color: #ffffff;
+  padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom, 0px));
+  font-family: var(--sans); font-size: 13px; font-weight: 500; line-height: 1.35;
+  text-align: center;
+}
+@media (min-width: 720px) { .delivery-bar { font-size: 14px; } }
+
+/* ------------------------------------------------------------------
    MOTION AND PRINT
    ------------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
@@ -660,7 +673,8 @@ button { font: inherit; }
 }
 
 @media print {
-  .site-header, .intro, .ticker, .hero__q, .site-footer__q, .print-btn, .checkpoint__q { display: none !important; }
+  .site-header, .intro, .ticker, .hero__q, .site-footer__q, .print-btn, .checkpoint__q, .delivery-bar { display: none !important; }
+  body { padding-bottom: 0 !important; }
   body, .site-footer, .section--ink { background: #fff !important; color: #000 !important; }
   .reveal { opacity: 1; transform: none; }
   .heading__mark .q { opacity: 1; transform: none; }

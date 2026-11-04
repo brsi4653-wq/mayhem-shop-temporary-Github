@@ -77,19 +77,29 @@ window.MAYHEM = {
      QUOTATIONS (Mayhem's name for a drop)
      id: short code used by products below. No spaces.
      opens / closes: Halifax time. null = not set yet.
-     shipsBy: date only, Halifax time.
+     delivery: the delivery line shown in the pink bar at the bottom of
+       every page, next to every buy button, and on the policy page.
+       Change shipsBy and arriveBy to update the dates. {shipsBy} and
+       {arriveBy} in the text get replaced with them.
      The countdown on the site is display only. It does NOT turn off
      Stripe. Deactivate your Payment Links in Stripe yourself at close.
      ------------------------------------------------------------------ */
   currentQuotation: "quotation-001",
 
+  // true = show the countdown on the home page (it needs opens/closes set).
+  showCountdown: false,
+
   quotations: [
     {
       id: "quotation-001",
       name: "Quotation 001",
-      opens: "2026-12-31 00:00",   // Halifax time
+      opens: null,     // e.g. "2026-12-01 18:00"
       closes: null,    // e.g. "2026-12-15 23:59"
-      shipsBy: null    // e.g. "2027-01-20"
+      delivery: {
+        shipsBy: "January 31",
+        arriveBy: "February 28",
+        text: "Ships by {shipsBy}. Should arrive by {arriveBy}, probably sooner. Delivery is up to Canada Post, so delays outside our control can happen."
+      }
     }
   ],
 
@@ -173,8 +183,8 @@ window.MAYHEM = {
      price: number in CAD, or null for "Price TBA".
      available: number, or null to show nothing.
      stripeLink: the Stripe Payment Link URL, or null.
-     The buy button only works when status is "open" AND there's a
-     price AND a Stripe link.
+     The buy button works as soon as status is "open" AND stripeLink is a
+     full https:// link. Until then it shows a disabled "Link coming soon".
      colours: name, product number, band colour, front image, back image.
        back is optional. Leave it out and the flip arrow is hidden.
      ------------------------------------------------------------------ */
@@ -184,7 +194,7 @@ window.MAYHEM = {
       name: "Quotation Mayhem",
       type: "tee",
       quotation: "quotation-001",
-      status: "upcoming",
+      status: "open",
       price: null,
       available: null,
       stripeLink: null,
@@ -200,7 +210,7 @@ window.MAYHEM = {
       name: "Quotation Mayhem Button-up",
       type: "buttonup",
       quotation: "quotation-001",
-      status: "upcoming",
+      status: "open",
       price: null,
       available: null,
       stripeLink: null,
@@ -214,7 +224,7 @@ window.MAYHEM = {
       name: "Quotation Mayhem Hoodie",
       type: "hoodie",
       quotation: "quotation-001",
-      status: "upcoming",
+      status: "open",
       price: null,
       available: null,
       stripeLink: null,

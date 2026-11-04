@@ -207,7 +207,7 @@ window.MAYHEM = {
       type: "tee",
       quotation: "quotation-001",
       status: "open",
-      price: null,
+      price: 70,
       available: null,
       stripeLink: null,
       colours: [

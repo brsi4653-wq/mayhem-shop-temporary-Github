@@ -104,7 +104,7 @@ window.MAYHEM = {
   quotations: [
     {
       id: "quotation-001",
-      name: "Quotation 001",
+      name: "The “Mayhem 11” Collection",
       opens: null,     // e.g. "2026-12-01 18:00"
       closes: null,    // e.g. "2026-12-15 23:59"
       delivery: {

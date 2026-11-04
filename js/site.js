@@ -393,7 +393,7 @@
   function renderShop() {
     var drop = currentDrop();
     var nameEl = $("#drop-name");
-    if (nameEl) nameEl.textContent = drop && drop.name ? drop.name : "Next quotation";
+    if (nameEl) nameEl.textContent = drop && drop.name ? drop.name : "Next collection";
 
     var shipsEl = $("#drop-ships");
     if (shipsEl) {

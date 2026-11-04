@@ -35,11 +35,11 @@ window.MAYHEM = {
     // It still sits in this file, and the GitHub repo is public.
     // Nothing shows until every piece is filled in.
     address: {
-      number: null,        // TODO: house number
-      street: null,        // TODO: street name, e.g. "Example Street"
-      town: null,          // TODO: town
+      number: "4",
+      street: "Aster Place",
+      town: "Truro",
       province: "NS",
-      postal: null         // TODO: postal code
+      postal: "B2N 5X1"
     }
   },
 

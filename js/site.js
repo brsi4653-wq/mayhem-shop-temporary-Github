@@ -207,7 +207,6 @@
         '<div class="wrap"><div class="site-footer__grid">' +
           '<div class="site-footer__brand">' +
             '<img src="assets/logos/Mayhem-wild-logo-white.svg" alt="Mayhem" width="220" height="40">' +
-            '<img class="tag" src="assets/logos/Loves-You-tagline-white.png" alt="Loves You" width="900" height="219">' +
             '<div class="site-footer__links">' +
               '<a href="index.html">Shop</a><a href="index.html#checkpoint">Shipping</a><a href="size-guide.html">Size guide</a><a href="policy.html">Policy</a>' +
             "</div>" +

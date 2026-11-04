@@ -108,9 +108,12 @@ window.MAYHEM = {
       opens: null,     // e.g. "2026-12-01 18:00"
       closes: null,    // e.g. "2026-12-15 23:59"
       delivery: {
-        shipsBy: "January 31",
-        arriveBy: "February 28",
-        text: "Ships by {shipsBy}. Should arrive by {arriveBy}, probably sooner. Delivery is up to Canada Post, so delays outside our control can happen."
+        // Pre-orders are closed for now. When you reopen, set shipsBy and
+        // arriveBy and put back a text like:
+        // "Ships by {shipsBy}. Should arrive by {arriveBy}, probably sooner. Delivery is up to Canada Post, so delays outside our control can happen."
+        shipsBy: null,
+        arriveBy: null,
+        text: "Pre-orders open soon."
       }
     }
   ],
@@ -206,7 +209,7 @@ window.MAYHEM = {
       name: "Quotation Mayhem",
       type: "tee",
       quotation: "quotation-001",
-      status: "open",
+      status: "upcoming",   // closed for now. Set back to "open" to sell. The Stripe link stays.
       price: 70,
       available: null,
       stripeLink: "https://buy.stripe.com/8x26oGdeRbFPfgj7qf2ZO00",
@@ -222,7 +225,7 @@ window.MAYHEM = {
       name: "Quotation Mayhem Button-up",
       type: "buttonup",
       quotation: "quotation-001",
-      status: "open",
+      status: "upcoming",   // closed for now. Set back to "open" to sell. The Stripe link stays.
       price: 100,
       available: null,
       stripeLink: "https://buy.stripe.com/14A00i1w98tDb03cKz2ZO01",
@@ -236,7 +239,7 @@ window.MAYHEM = {
       name: "Quotation Mayhem Hoodie",
       type: "hoodie",
       quotation: "quotation-001",
-      status: "open",
+      status: "upcoming",   // closed for now. Set back to "open" to sell. The Stripe link stays.
       price: 120,
       available: null,
       stripeLink: "https://buy.stripe.com/7sY28q4Il9xH5FJh0P2ZO02",

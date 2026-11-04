@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mayhem "Loves You"</title>
+  <meta name="description" content="Mayhem is a Canadian streetwear brand. Pre-order only, shipped to Canada only. There's a community for you, so do your own thing.">
+  <meta property="og:title" content='Mayhem "Loves You"'>
+  <meta property="og:description" content="Pre-order only. Canadian brand. Canadian exclusive.">
+  <meta property="og:image" content="assets/products/QMUWB.jpg">
+  <meta name="theme-color" content="#1b1b1b">
+  <link rel="icon" type="image/png" href="assets/logos/M-icon-flat-red.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Familjen+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="shop">
+
+  <div class="intro" aria-hidden="true">
+    <span class="q q--open"></span>
+    <span class="q q--close"></span>
+  </div>
+
+  <header id="site-header"></header>
+
+  <main>
+    <section class="hero" aria-labelledby="drop-name">
+      <div class="hero__q hero__q--open" aria-hidden="true"><span class="q q--open"></span></div>
+      <div class="hero__q hero__q--close" aria-hidden="true"><span class="q q--close"></span></div>
+
+      <div class="hero__inner wrap">
+        <h1 class="visually-hidden">Mayhem "Loves You"</h1>
+        <img class="hero__logo" src="assets/logos/Mayhem-wild-logo-white.svg" alt="Mayhem" width="560" height="102">
+        <img class="hero__tag" src="assets/logos/Loves-You-tagline-white.png" alt="Loves You" width="900" height="219">
+
+        <div class="hero__drop">
+          <div class="mono">Pre-order only</div>
+          <p class="hero__dropname" id="drop-name">Drop 001</p>
+          <div class="countdown" id="countdown"></div>
+          <p class="hero__ships mono" id="drop-ships"></p>
+          <a class="btn btn--ghost hero__cta" href="#shop"><span class="q q--open" aria-hidden="true"></span><span>See the drop</span><span class="q q--close" aria-hidden="true"></span></a>
+        </div>
+      </div>
+    </section>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track">
+        <div class="ticker__item">Canadian brand <span class="q q--open"></span> Canadian exclusive <span class="q q--close"></span> Ships to Canada only <span class="q q--open"></span> Pre-order only <span class="q q--close"></span> Mayhem loves you <span class="q q--open"></span> Do Mayhem <span class="q q--close"></span></div>
+        <div class="ticker__item">Canadian brand <span class="q q--open"></span> Canadian exclusive <span class="q q--close"></span> Ships to Canada only <span class="q q--open"></span> Pre-order only <span class="q q--close"></span> Mayhem loves you <span class="q q--open"></span> Do Mayhem <span class="q q--close"></span></div>
+      </div>
+    </div>
+
+    <section class="section" id="shop" aria-labelledby="shop-title">
+      <div class="wrap">
+        <h2 class="heading"><span class="heading__mark" aria-hidden="true"><span class="q q--open"></span></span><span id="shop-title">The drop</span></h2>
+        <p class="lede reveal">Everything is made to order. Pre-order during the window, pick your size and colour at checkout, and it ships by the date on the drop.</p>
+        <div class="grid" id="product-grid">
+          <div class="empty" style="grid-column:1/-1"><span class="q q--open"></span><p>Loading the drop.</p><span class="q q--close"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--ink checkpoint" id="checkpoint" aria-labelledby="cp-title">
+      <div class="checkpoint__q" aria-hidden="true"><span class="q q--close"></span></div>
+      <div class="wrap">
+        <h2 class="heading" id="cp-title"><span class="heading__mark" aria-hidden="true"><span class="q q--open"></span></span><span>The Checkpoint</span></h2>
+        <p class="lede reveal">Your order doesn't go straight from a factory to your door. It comes to us first. Every piece gets checked for print quality and sizing, misprints get sent back and argued about, and whatever passes gets repackaged and sent to you with Canada Post. We call this The Checkpoint. It is mostly a table. It is a very serious table.</p>
+
+        <ol class="steps reveal">
+          <li><strong>The window opens</strong><span>You pre-order. One item per order.</span></li>
+          <li><strong>The window closes</strong><span>We place one big order with the printer.</span></li>
+          <li class="is-checkpoint"><strong>The Checkpoint</strong><span>Every piece gets inspected by an actual person who cares too much.</span></li>
+          <li><strong>Canada Post</strong><span>It leaves us and comes to you. Canada only.</span></li>
+        </ol>
+
+        <div class="ship-box reveal">
+          <p class="mono" style="margin:0 0 6px;color:var(--apricot)">Shipping, per order</p>
+          <div id="ship-lines"></div>
+          <p class="fine" style="margin-top:14px">Ships to Canadian addresses only. Every drop has a ships-by date. <a href="policy.html">Policy</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="data/shop.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>

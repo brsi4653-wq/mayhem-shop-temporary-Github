@@ -633,6 +633,17 @@ button { font: inherit; }
 .site-footer__brand .tag { width: 150px; margin-top: 12px; opacity: 0.85; }
 .site-footer__links { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 22px; }
 .site-footer__links a { font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; text-underline-offset: 4px; }
+.socials { list-style: none; margin: 26px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.socials a {
+  display: inline-flex; flex-direction: column; gap: 2px;
+  padding: 10px 14px; min-width: 132px;
+  border: 1px solid rgba(236, 235, 231, 0.3);
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.socials a:hover, .socials a:focus-visible { border-color: var(--pink); background: var(--pink); outline: none; }
+.socials__name { font-size: 11px; opacity: 0.7; }
+.socials__handle { font-size: 15px; }
 .site-footer__legal { margin-top: 36px; font-size: 13px; opacity: 0.6; position: relative; z-index: 1; }
 .site-footer__q { position: absolute; width: 260px; right: -40px; bottom: -80px; color: rgba(236, 235, 231, 0.06); }
 .site-footer__q .q { width: 100%; }

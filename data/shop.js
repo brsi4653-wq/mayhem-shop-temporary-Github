@@ -44,6 +44,16 @@ window.MAYHEM = {
   },
 
   /* ------------------------------------------------------------------
+     SOCIALS
+     Shown in the footer of every page. Remove a line to hide it.
+     ------------------------------------------------------------------ */
+  socials: [
+    { name: "Instagram", handle: "getmayhemtoday", url: "https://www.instagram.com/getmayhemtoday/" },
+    { name: "X", handle: "@GetMayhemToday", url: "https://x.com/GetMayhemToday" },
+    { name: "YouTube", handle: "@GetMayhemToday", url: "https://www.youtube.com/@GetMayhemToday" }
+  ],
+
+  /* ------------------------------------------------------------------
      SHIPPING
      Charged once per order. Every order is one item.
      In Stripe, set these up as LINE ITEMS on each Payment Link,
@@ -77,7 +87,7 @@ window.MAYHEM = {
     {
       id: "quotation-001",
       name: "Quotation 001",
-      opens: null,     // e.g. "2026-12-01 18:00"
+      opens: "2026-12-31 00:00",   // Halifax time
       closes: null,    // e.g. "2026-12-15 23:59"
       shipsBy: null    // e.g. "2027-01-20"
     }

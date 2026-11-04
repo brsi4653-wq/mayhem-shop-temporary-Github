@@ -201,6 +201,16 @@
       '<p class="notice">"This contact information is provided only for questions about Mayhem orders. Any misuse of it, including harassment, threats, spam, impersonation, or sharing or publishing it elsewhere, will be documented and may result in legal action against you, including civil claims and reports to police."</p>';
   }
 
+  function socialsHTML() {
+    var list = Array.isArray(D.socials) ? D.socials.filter(function (s) { return s && /^https:\/\//i.test(s.url || ""); }) : [];
+    if (!list.length) return "";
+    return '<ul class="socials" aria-label="Mayhem on social media">' + list.map(function (s) {
+      return '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' +
+        '<span class="socials__name mono">' + esc(s.name) + "</span>" +
+        '<span class="socials__handle">' + esc(s.handle || "") + "</span></a></li>";
+    }).join("") + "</ul>";
+  }
+
   /* ---------------- header and footer ---------------- */
 
   function renderChrome() {
@@ -225,6 +235,7 @@
             '<div class="site-footer__links">' +
               '<a href="index.html">Shop</a><a href="index.html#checkpoint">Shipping</a><a href="size-guide.html">Size guide</a><a href="policy.html">Policy</a>' +
             "</div>" +
+            socialsHTML() +
           "</div>" +
           "<div>" + contactHTML() + "</div>" +
         "</div>" +

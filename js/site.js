@@ -123,11 +123,6 @@
     return null;
   }
 
-  function shipTotal() {
-    var a = shipping.toCheckpoint, b = shipping.fromCheckpoint;
-    if (isNum(a) && isNum(b)) return a + b;
-    return null;
-  }
 
   // only a real, full https:// address counts as a Stripe link
   function validLink(u) {
@@ -166,7 +161,7 @@
     var s = buyState(p);
     var cls = "btn btn--block " + (extra || "");
     if (s.ok && validLink(s.href)) {
-      return '<a class="' + cls + '" href="' + esc(s.href.trim()) + '" rel="noopener">' + quoted(esc(s.label)) + "</a>";
+      return '<a class="' + cls + '" href="' + esc(s.href.trim()) + '" rel="noopener" data-checkout>' + quoted(esc(s.label)) + "</a>";
     }
     return '<span class="' + cls + '" role="link" aria-disabled="true">' + esc(s.ok ? "Link coming soon" : s.label) + "</span>";
   }
@@ -212,6 +207,13 @@
       return "<div><dt>" + r[0] + "</dt><dd>" + r[1] + "</dd></div>";
     }).join("") + "</dl>" +
       '<p class="notice">"This contact information is provided only for questions about Mayhem orders. Any misuse of it, including harassment, threats, spam, impersonation, or sharing or publishing it elsewhere, will be documented and may result in legal action against you, including civil claims and reports to police."</p>';
+  }
+
+  function payHTML() {
+    var list = Array.isArray(D.paymentMethods) ? D.paymentMethods.filter(Boolean) : [];
+    if (!list.length) return "";
+    return '<div class="pay"><span class="pay__label mono">Checkout accepts</span><ul class="pay__list">' +
+      list.map(function (m) { return "<li>" + esc(m) + "</li>"; }).join("") + "</ul></div>";
   }
 
   function socialsHTML() {
@@ -265,7 +267,7 @@
             '<div class="site-footer__links">' +
               '<a href="index.html">Shop</a><a href="index.html#checkpoint">Shipping</a><a href="size-guide.html">Size guide</a><a href="policy.html">Policy</a>' +
             "</div>" +
-            socialsHTML() +
+            socialsHTML() + payHTML() +
           "</div>" +
           "<div>" + contactHTML() + "</div>" +
         "</div>" +
@@ -479,17 +481,17 @@
   function renderShippingLines(el, p) {
     if (!el) return;
     var rows = [];
+    var sp = shipping.price, ip = shipping.inspectionPrice;
     if (p) rows.push(["<span>" + esc(p.name) + '<span class="sub">Size and colour picked at checkout</span></span>', money(p.price) || "TBA"]);
-    rows.push(['To the Checkpoint<span class="sub">Getting it from the printer to us</span>', money(shipping.toCheckpoint) || "TBA"]);
-    rows.push(['From the Checkpoint<span class="sub">Canada Post, from us to you</span>', money(shipping.fromCheckpoint) || "TBA"]);
-    var st = shipTotal();
-    var total;
-    if (p) total = isNum(p.price) && isNum(st) ? money(p.price + st) : "TBA";
+    rows.push([esc(shipping.name || "Canada Post Shipping") + '<span class="sub">Required. Ships uninspected unless you add the inspection below.</span>', money(sp) || "TBA"]);
+    rows.push([esc(shipping.inspectionName || "Checkpoint Inspection") + ' <span class="opt mono">Optional</span><span class="sub">Add it at checkout. We check your piece before it ships.</span>', ip ? "+" + money(ip) : "TBA"]);
     var html = "<table class=\"lines\"><tbody>" + rows.map(function (r) {
       return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td></tr>";
     }).join("");
-    if (p) html += '<tr class="total"><td>Total (CAD)</td><td>' + esc(total) + "</td></tr>";
-    else html += '<tr class="total"><td>Shipping total, per item</td><td>' + esc(money(st) || "TBA") + "</td></tr>";
+    var base = p ? (isNum(p.price) && isNum(sp) ? p.price + sp : null) : (isNum(sp) ? sp : null);
+    var lbl = p ? "Total (CAD)" : "Shipping, per item";
+    html += '<tr class="total"><td>' + lbl + ', with inspection</td><td>' + esc(isNum(base) && isNum(ip) ? money(base + ip) : "TBA") + "</td></tr>";
+    html += '<tr class="total total--alt"><td>' + lbl + ', Checkpoint Skipped</td><td>' + esc(isNum(base) ? money(base) : "TBA") + "</td></tr>";
     html += "</tbody></table>";
     if (D.taxNote) html += '<p class="fine" style="margin-top:8px">' + esc(D.taxNote) + "</p>";
     el.innerHTML = html;
@@ -608,6 +610,7 @@
             buyButton(p, "btn--pink") +
             '<p class="fine">Canada only.</p>' +
             policyLine(p) +
+            payHTML() +
           "</div>" +
 
           (specs ? '<div class="block"><h2>Details</h2><table class="specs"><tbody>' + specs + "</tbody></table></div>" : "") +
@@ -719,6 +722,29 @@
     });
   }
 
+  // the quotes slam shut over the page, then it's off to Stripe
+  function checkoutExit() {
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("a[data-checkout]");
+      if (!a || !validLink(a.getAttribute("href"))) return;
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      if (reduceMotion) return;
+      e.preventDefault();
+      var href = a.getAttribute("href");
+      var ov = document.createElement("div");
+      ov.className = "exit";
+      ov.setAttribute("aria-hidden", "true");
+      ov.innerHTML = q("open") + '<span class="exit__label">Taking you to checkout</span>' + q("close");
+      document.body.appendChild(ov);
+      setTimeout(function () { window.location.href = href; }, 1050);
+    });
+    // coming back with the browser's back button: clear the overlay
+    window.addEventListener("pageshow", function (e) {
+      if (!e.persisted) return;
+      Array.prototype.forEach.call(document.querySelectorAll(".exit"), function (n) { n.parentNode.removeChild(n); });
+    });
+  }
+
   /* ---------------- go ---------------- */
 
   intro();
@@ -733,6 +759,7 @@
     if (window.console) console.error("Mayhem: something in data/shop.js didn't load right.", err);
   }
   fillTicker();
+  checkoutExit();
   observe();
   scrollFx();
 })();

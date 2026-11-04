@@ -56,13 +56,25 @@ window.MAYHEM = {
   /* ------------------------------------------------------------------
      SHIPPING
      Charged once per order. Every order is one item.
-     In Stripe, set these up as LINE ITEMS on each Payment Link,
-     not as Stripe shipping options.
+     In Stripe, on each Payment Link:
+       - shipping is a required LINE ITEM (not a Stripe shipping option),
+       - the inspection is an OPTIONAL item ("+ Add recommended products")
+         that the customer adds at checkout.
+     The names here should match the names in Stripe.
      ------------------------------------------------------------------ */
   shipping: {
-    toCheckpoint: 15,
-    fromCheckpoint: 25
+    name: "Canada Post Shipping (Checkpoint Skipped)",
+    price: 35,
+    inspectionName: "Checkpoint Inspection",
+    inspectionPrice: 5
   },
+
+  /* ------------------------------------------------------------------
+     PAYMENT METHODS
+     What Stripe checkout accepts. Shown by the buy box and in the footer.
+     Keep this matching what's turned on in Stripe.
+     ------------------------------------------------------------------ */
+  paymentMethods: ["Card", "Apple Pay", "Klarna", "Link"],
 
   /* ------------------------------------------------------------------
      TAX

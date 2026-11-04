@@ -679,3 +679,51 @@ body { padding-bottom: var(--bar-h, 0px); }
   .reveal { opacity: 1; transform: none; }
   .heading__mark .q { opacity: 1; transform: none; }
 }
+
+/* optional inspection line in the price breakdown */
+.lines .opt { display: inline-block; margin-left: 6px; padding: 1px 6px; border: 1px solid currentColor; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.8; vertical-align: 2px; }
+.lines tr.total--alt td { font-weight: 500; opacity: 0.75; padding-top: 4px; }
+
+/* ------------------------------------------------------------------
+   CHECKOUT BUTTON: bigger quotes on hover, closing animation on click
+   ------------------------------------------------------------------ */
+.btn[data-checkout] { gap: 14px; }
+.btn[data-checkout] .q { width: 18px; }
+.btn[data-checkout] .q--open { transform: translate(-24px, -6px) rotate(-35deg) scale(0.6); }
+.btn[data-checkout] .q--close { transform: translate(24px, 6px) rotate(35deg) scale(0.6); }
+.btn[data-checkout]:hover .q, .btn[data-checkout]:focus-visible .q { transform: none; }
+
+.exit {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center; gap: 2vmin;
+  background: var(--ink); color: var(--paper);
+  animation: exit-in 0.35s var(--ease) both;
+}
+.exit .q { width: min(26vmin, 200px); }
+.exit .q--open { animation: exit-open 0.8s var(--slam) both; }
+.exit .q--close { animation: exit-close 0.8s var(--slam) both; }
+.exit__label {
+  position: absolute; left: 0; right: 0; bottom: 18vh; text-align: center;
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--apricot);
+  animation: exit-in 0.4s var(--ease) 0.45s both;
+}
+@keyframes exit-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes exit-open {
+  from { transform: translate(-70vw, -50vh) rotate(-40deg); }
+  to   { transform: none; }
+}
+@keyframes exit-close {
+  from { transform: translate(70vw, 50vh) rotate(40deg); }
+  to   { transform: none; }
+}
+
+/* accepted payment methods */
+.pay { margin-top: 16px; }
+.pay__label { display: block; font-size: 10px; opacity: 0.7; margin-bottom: 6px; }
+.pay__list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.pay__list li {
+  padding: 4px 10px; border: 1px solid currentColor; border-radius: 999px;
+  font-size: 13px; font-weight: 600; line-height: 1.3; opacity: 0.9;
+}
+.site-footer .pay { margin-top: 22px; }

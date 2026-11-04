@@ -168,7 +168,7 @@
 
   function policyLine(p) {
     var dt = deliveryText(dropById(pDrop(p)) || currentDrop());
-    return '<p class="fine">All sales final. <a href="policy.html">Policy</a>' +
+    return '<p class="fine">All sales final. <a href="policy.html">Policies</a>' +
       (dt ? '<span class="fine__delivery"> ' + esc(dt) + "</span>" : "") + "</p>";
   }
 
@@ -201,7 +201,7 @@
       var addr = addressText(c.address);
       rows.push(["Address", addr ? esc(addr) : '<span class="todo">Address coming soon</span>']);
     } else {
-      rows.push(["Address", '<a href="policy.html#contact">On the policy page</a>']);
+      rows.push(["Address", '<a href="policy.html#contact">On the Policies page</a>']);
     }
     return '<dl class="contact">' + rows.map(function (r) {
       return "<div><dt>" + r[0] + "</dt><dd>" + r[1] + "</dd></div>";
@@ -248,7 +248,7 @@
   function renderChrome() {
     var h = $("#site-header");
     if (h) {
-      var links = [["index.html", "Shop", "shop"], ["index.html#checkpoint", "Shipping", "shipping"], ["size-guide.html", "Size guide", "sizes"], ["policy.html", "Policy", "policy"]];
+      var links = [["index.html", "Shop", "shop"], ["index.html#checkpoint", "Shipping", "shipping"], ["size-guide.html", "Size guide", "sizes"], ["policy.html", "Policies", "policy"]];
       h.className = "site-header";
       h.innerHTML = '<div class="wrap">' +
         '<a class="brand" href="index.html"><img src="assets/logos/Mayhem-wild-logo-black.svg" alt="Mayhem" width="160" height="29"></a>' +
@@ -265,7 +265,7 @@
           '<div class="site-footer__brand">' +
             '<img src="assets/logos/Mayhem-wild-logo-white.svg" alt="Mayhem" width="220" height="40">' +
             '<div class="site-footer__links">' +
-              '<a href="index.html">Shop</a><a href="index.html#checkpoint">Shipping</a><a href="size-guide.html">Size guide</a><a href="policy.html">Policy</a>' +
+              '<a href="index.html">Shop</a><a href="index.html#checkpoint">Shipping</a><a href="size-guide.html">Size guide</a><a href="policy.html">Policies</a>' +
             "</div>" +
             socialsHTML() + payHTML() +
           "</div>" +

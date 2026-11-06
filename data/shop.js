@@ -104,7 +104,7 @@ window.MAYHEM = {
   quotations: [
     {
       id: "quotation-001",
-      name: "The “Mayhem 11” Collection",
+      name: "The “Dynamically” Collection",
       opens: null,     // e.g. "2026-12-01 18:00"
       closes: null,    // e.g. "2026-12-15 23:59"
       delivery: {
@@ -203,5 +203,32 @@ window.MAYHEM = {
      colours: name, product number, band colour, front image, back image.
        back is optional. Leave it out and the flip arrow is hidden.
      ------------------------------------------------------------------ */
-  products: []
+  products: [
+    {
+      id: "rust-drip",
+      name: "Rust Drip",
+      type: "tee",
+      quotation: "quotation-001",
+      status: "upcoming",
+      price: null,
+      available: null,
+      stripeLink: null,
+      colours: [
+        { name: "White", number: null, band: "#f2f1ee", image: "assets/products/rust-drip.jpg", back: "assets/products/rust-drip-back.jpg" }
+      ]
+    },
+    {
+      id: "thermal",
+      name: "Thermal",
+      type: "tee",
+      quotation: "quotation-001",
+      status: "upcoming",
+      price: null,
+      available: null,
+      stripeLink: null,
+      colours: [
+        { name: "White", number: null, band: "#f2f1ee", image: "assets/products/thermal.jpg", back: "assets/products/thermal-back.jpg" }
+      ]
+    }
+  ]
 };

@@ -727,3 +727,58 @@ body { padding-bottom: var(--bar-h, 0px); }
   font-size: 13px; font-weight: 600; line-height: 1.3; opacity: 0.9;
 }
 .site-footer .pay { margin-top: 22px; }
+
+/* ------------------------------------------------------------------
+   THERMAL: heat glow and film grain, same colours as the rest
+   ------------------------------------------------------------------ */
+:root {
+  --heat: rgba(184, 13, 94, 0.55);
+  --heat-soft: rgba(184, 13, 94, 0.22);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* fine grain over the whole page, like the prints */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: 90;
+  background: var(--grain); opacity: 0.07;
+  pointer-events: none;
+}
+
+/* hero: a slow pink heat bloom behind the quotes and logo */
+.hero::before {
+  content: ""; position: absolute; inset: -20%; z-index: 0;
+  background:
+    radial-gradient(38% 34% at 22% 18%, var(--heat) 0%, transparent 70%),
+    radial-gradient(40% 36% at 80% 86%, var(--heat) 0%, transparent 70%),
+    radial-gradient(30% 26% at 50% 52%, var(--heat-soft) 0%, transparent 72%);
+  filter: blur(30px);
+  animation: heat 9s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes heat {
+  from { opacity: 0.75; transform: scale(1); }
+  to   { opacity: 1; transform: scale(1.06) translate(1%, -1%); }
+}
+.hero__q .q { filter: drop-shadow(0 0 28px var(--heat)) drop-shadow(0 0 70px var(--heat-soft)); }
+.hero__dropname { text-shadow: 0 0 22px var(--heat), 0 0 60px var(--heat-soft); }
+
+/* product cards warm up on hover */
+.tile { transition: box-shadow 0.45s var(--ease), border-color 0.45s var(--ease); }
+.tile:hover, .tile:focus-within {
+  border-color: color-mix(in srgb, var(--pink) 45%, transparent);
+  box-shadow: 0 0 0 1px var(--heat-soft), 0 18px 50px -18px var(--heat);
+}
+
+/* the black sections get a faint heat spot */
+.section--ink { position: relative; }
+.section--ink::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(60% 50% at 100% 0%, var(--heat-soft), transparent 70%);
+}
+.section--ink > .wrap { position: relative; }
+
+.btn--pink { box-shadow: 0 0 24px -6px var(--heat); }
+
+@media print {
+  body::after, .hero::before, .section--ink::before { display: none !important; }
+}

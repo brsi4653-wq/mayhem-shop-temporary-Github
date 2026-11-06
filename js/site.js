@@ -569,6 +569,183 @@
 
   /* ---------------- product page ---------------- */
 
+  /* ---------------- full-screen zoom ----------------
+     Tap the product image to open it big. Click or tap to zoom in at that
+     spot, move or drag to look around, scroll or pinch for finer zoom.
+     The Front/Back button (or the arrow keys) flips it without losing the zoom. */
+
+  var ZOOM_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">' +
+    '<circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/>' +
+    '<path d="M15.5 15.5 21 21M10.5 7.5v6M7.5 10.5h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+
+  function bindZoom(root, p) {
+    var media = root.querySelector(".product__media");
+    if (!media || !p.colours.length || !p.colours[0].image) return;
+    var card = media.querySelector(".viewer__card");
+    if (!card) return;
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "viewer__zoom";
+    btn.setAttribute("aria-label", "Zoom in on " + p.name);
+    btn.innerHTML = ZOOM_ICON + '<span>Zoom</span>';
+    media.appendChild(btn);
+    function open(e) { if (e) e.preventDefault(); openZoom(p, media, btn); }
+    card.addEventListener("click", open);
+    btn.addEventListener("click", open);
+  }
+
+  function openZoom(p, media, opener) {
+    var view = p._view || (p._view = { colour: 0, back: false });
+    var c = p.colours[view.colour] || p.colours[0];
+    var hasBack = !!c.back;
+    var back = hasBack && view.back;
+    function src(side) { return side ? (c.zoomBack || c.back) : (c.zoom || c.image); }
+
+    var box = document.createElement("div");
+    box.className = "zoom";
+    box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
+    box.setAttribute("aria-label", p.name + ", zoomed in");
+    box.innerHTML =
+      '<button type="button" class="zoom__close" aria-label="Close">' +
+        '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>' +
+      '<div class="zoom__stage"><img class="zoom__img" alt="" draggable="false"></div>' +
+      '<div class="zoom__bar">' +
+        '<p class="zoom__name">' + esc(p.name) + '<span class="mono zoom__side"></span></p>' +
+        (hasBack ? '<button type="button" class="zoom__flip" aria-pressed="false">' + FLIP_ICON + '<span class="zoom__flip-label">Back</span></button>' : "") +
+        '<p class="zoom__hint mono"></p>' +
+      "</div>";
+    document.body.appendChild(box);
+    var stage = box.querySelector(".zoom__stage"), img = box.querySelector(".zoom__img");
+    var flip = box.querySelector(".zoom__flip"), flipLabel = box.querySelector(".zoom__flip-label");
+    var side = box.querySelector(".zoom__side"), hint = box.querySelector(".zoom__hint");
+    var closeBtn = box.querySelector(".zoom__close");
+    var fine = window.matchMedia && window.matchMedia("(pointer: fine)").matches;
+
+    var scale = 1, tx = 0, ty = 0, MAXS = 4, STEP = 2.5;
+    function limits() {
+      var r = img.getBoundingClientRect(), w = r.width / scale, h = r.height / scale;
+      return { x: Math.max(0, (w * scale - w) / 2), y: Math.max(0, (h * scale - h) / 2), w: w, h: h };
+    }
+    function clamp() {
+      var L = limits();
+      tx = Math.max(-L.x, Math.min(L.x, tx)); ty = Math.max(-L.y, Math.min(L.y, ty));
+    }
+    function apply() {
+      if (scale <= 1.001) { scale = 1; tx = 0; ty = 0; }
+      clamp();
+      img.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + scale + ")";
+      box.classList.toggle("is-zoomed", scale > 1);
+      hint.textContent = scale > 1
+        ? (fine ? "Move to look around. Click to zoom out." : "Drag to look around. Tap to zoom out.")
+        : (fine ? "Click anywhere to zoom in. Scroll to zoom." : "Tap to zoom in. Pinch to zoom.");
+    }
+    // zoom to `to`, keeping the point (cx, cy) on screen where it is
+    function zoomAt(to, cx, cy) {
+      var r = stage.getBoundingClientRect();
+      var ox = cx - (r.left + r.width / 2), oy = cy - (r.top + r.height / 2);
+      to = Math.max(1, Math.min(MAXS, to));
+      tx = ox - (ox - tx) * (to / scale); ty = oy - (oy - ty) * (to / scale);
+      scale = to; apply();
+    }
+    function showSide(first) {
+      img.src = src(back);
+      img.alt = p.name + " in " + c.name + ", " + (back ? "back" : "front");
+      side.textContent = back ? "Back" : "Front";
+      if (flip) {
+        flip.setAttribute("aria-pressed", String(back));
+        flip.setAttribute("aria-label", back ? "Show the front" : "Show the back");
+        flipLabel.textContent = back ? "Front" : "Back";
+      }
+      if (!first && !reduceMotion) { img.classList.remove("is-flipping"); void img.offsetWidth; img.classList.add("is-flipping"); }
+    }
+    function doFlip() { if (!hasBack) return; back = !back; showSide(false); }
+    showSide(true); apply();
+    // warm the other side so the flip is instant
+    if (hasBack) new Image().src = src(!back);
+
+    // pointer handling: tap = toggle zoom, drag = pan, two fingers = pinch
+    var pts = {}, start = null, moved = false, pinch = null;
+    stage.addEventListener("pointerdown", function (e) {
+      if (e.target !== img) return;
+      img.setPointerCapture && img.setPointerCapture(e.pointerId);
+      pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+      var ids = Object.keys(pts);
+      if (ids.length === 2) {
+        var a = pts[ids[0]], b = pts[ids[1]];
+        pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), s: scale, cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2 };
+        moved = true;
+      } else {
+        start = { x: e.clientX, y: e.clientY, tx: tx, ty: ty }; moved = false;
+      }
+      box.classList.add("is-panning");
+    });
+    stage.addEventListener("pointermove", function (e) {
+      if (pts[e.pointerId]) pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+      var ids = Object.keys(pts);
+      if (pinch && ids.length === 2) {
+        var a = pts[ids[0]], b = pts[ids[1]];
+        var d = Math.hypot(a.x - b.x, a.y - b.y);
+        zoomAt(pinch.s * d / pinch.d, pinch.cx, pinch.cy); return;
+      }
+      if (start && ids.length === 1) {
+        var dx = e.clientX - start.x, dy = e.clientY - start.y;
+        if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+        if (moved && scale > 1) { tx = start.tx + dx; ty = start.ty + dy; apply(); }
+        return;
+      }
+      // mouse with no button held: the image follows the cursor while zoomed
+      if (fine && scale > 1 && e.pointerType === "mouse" && !ids.length) {
+        var r = stage.getBoundingClientRect(), L = limits();
+        var fx = (e.clientX - r.left) / r.width - 0.5, fy = (e.clientY - r.top) / r.height - 0.5;
+        tx = -fx * 2 * L.x; ty = -fy * 2 * L.y; apply();
+      }
+    });
+    function up(e) {
+      var wasTap = start && !moved && Object.keys(pts).length === 1;
+      delete pts[e.pointerId];
+      if (Object.keys(pts).length < 2) pinch = null;
+      if (!Object.keys(pts).length) box.classList.remove("is-panning");
+      if (wasTap && e.type === "pointerup") {
+        if (scale > 1) { scale = 1; apply(); } else zoomAt(STEP, e.clientX, e.clientY);
+      }
+      if (!Object.keys(pts).length) start = null;
+    }
+    stage.addEventListener("pointerup", up);
+    stage.addEventListener("pointercancel", up);
+    stage.addEventListener("wheel", function (e) {
+      e.preventDefault();
+      zoomAt(scale * Math.exp(-e.deltaY * 0.0022), e.clientX, e.clientY);
+    }, { passive: false });
+    // tap on the dark area (not the image) closes
+    stage.addEventListener("click", function (e) { if (e.target === stage) close(); });
+    window.addEventListener("resize", apply);
+
+    if (flip) flip.addEventListener("click", doFlip);
+    closeBtn.addEventListener("click", close);
+    function onKey(e) {
+      if (e.key === "Escape") { e.preventDefault(); close(); }
+      else if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); doFlip(); }
+      else if (e.key === "Tab") {   // keep focus inside the zoom view
+        var f = [closeBtn, flip].filter(Boolean), i = f.indexOf(document.activeElement);
+        e.preventDefault(); f[(i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    var prevOverflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    requestAnimationFrame(function () { box.classList.add("is-open"); closeBtn.focus(); });
+
+    function close() {
+      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", apply);
+      document.documentElement.style.overflow = prevOverflow;
+      // the product image shows whichever side you left the zoom on
+      var pageFlip = media.querySelector(".viewer__flip");
+      if (pageFlip && !!view.back !== back) pageFlip.click();
+      box.remove();
+      if (opener) opener.focus();
+    }
+  }
+
   function renderProduct() {
     var el = $("#product");
     if (!el) return;
@@ -620,6 +797,7 @@
       "</div></div>";
       renderShippingLines($("#buy-lines"), p);
       bindViewers(el, { p: p });
+      bindZoom(el, p);
       bindToggles(draw);
     }
     draw();

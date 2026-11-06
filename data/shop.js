@@ -202,6 +202,8 @@ window.MAYHEM = {
      full https:// link. Until then it shows a disabled "Link coming soon".
      colours: name, product number, band colour, front image, back image.
        back is optional. Leave it out and the flip arrow is hidden.
+       zoom / zoomBack: optional bigger images for the full-screen zoom view.
+       Leave them out and the zoom view uses image / back.
      ------------------------------------------------------------------ */
   products: [
     {
@@ -214,7 +216,7 @@ window.MAYHEM = {
       available: null,
       stripeLink: null,
       colours: [
-        { name: "White", number: null, band: "#f2f1ee", image: "assets/products/rust-drip.jpg", back: "assets/products/rust-drip-back.jpg" }
+        { name: "White", number: null, band: "#f2f1ee", image: "assets/products/rust-drip.jpg", back: "assets/products/rust-drip-back.jpg", zoom: "assets/products/rust-drip-full.jpg", zoomBack: "assets/products/rust-drip-back-full.jpg" }
       ]
     },
     {
@@ -227,7 +229,7 @@ window.MAYHEM = {
       available: null,
       stripeLink: null,
       colours: [
-        { name: "White", number: null, band: "#f2f1ee", image: "assets/products/thermal.jpg", back: "assets/products/thermal-back.jpg" }
+        { name: "White", number: null, band: "#f2f1ee", image: "assets/products/thermal.jpg", back: "assets/products/thermal-back.jpg", zoom: "assets/products/thermal-full.jpg", zoomBack: "assets/products/thermal-back-full.jpg" }
       ]
     },
     {
@@ -240,7 +242,7 @@ window.MAYHEM = {
       available: null,
       stripeLink: null,
       colours: [
-        { name: "Faded Apricot", number: null, band: "#e5d9c8", image: "assets/products/falling.jpg", back: "assets/products/falling-back.jpg" }
+        { name: "Faded Apricot", number: null, band: "#e5d9c8", image: "assets/products/falling.jpg", back: "assets/products/falling-back.jpg", zoom: "assets/products/falling-full.jpg", zoomBack: "assets/products/falling-back-full.jpg" }
       ]
     }
   ]

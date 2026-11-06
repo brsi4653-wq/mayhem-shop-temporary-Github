@@ -135,7 +135,7 @@ window.MAYHEM = {
         ["Finish", "Mineral wash, snow wash effect"],
         ["Fit", "Oversized, drop shoulder"],
         ["Neck and sleeve", "Round neck, short sleeve"],
-        ["Print", "DTG, front only"],
+        ["Print", "DTG, front and back"],
         ["Model fit", "6'1\", 154 lbs wears L. 5'8\", 121 lbs wears S."]
       ],
       care: "Machine wash at 30°C on gentle. Do not bleach. Tumble dry low. Iron low and avoid the print. Do not dry clean.",
@@ -228,6 +228,19 @@ window.MAYHEM = {
       stripeLink: null,
       colours: [
         { name: "White", number: null, band: "#f2f1ee", image: "assets/products/thermal.jpg", back: "assets/products/thermal-back.jpg" }
+      ]
+    },
+    {
+      id: "falling",
+      name: "Falling",
+      type: "tee",
+      quotation: "quotation-001",
+      status: "upcoming",
+      price: null,
+      available: null,
+      stripeLink: null,
+      colours: [
+        { name: "Faded Apricot", number: null, band: "#e5d9c8", image: "assets/products/falling.jpg", back: "assets/products/falling-back.jpg" }
       ]
     }
   ]

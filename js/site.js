@@ -194,7 +194,7 @@
     var phone = Array.isArray(c.phone) ? c.phone.join(" ") : null;
     var tel = Array.isArray(c.phone) ? "+1" + c.phone.join("") : null;
     var rows = [];
-    rows.push(["Seller", esc(c.name || "Simon Brookes") + ", sole proprietor, selling as Mayhem"]);
+    rows.push(["Seller", esc(c.name || "") + ", sole proprietor, selling as Mayhem"]);
     rows.push(["Email", email ? '<a href="mailto:' + esc(email) + '">' + esc(email) + "</a>" : '<span class="todo">Email TBA</span>']);
     rows.push(["Phone", phone ? '<a href="tel:' + esc(tel) + '">' + esc(phone) + "</a>" : '<span class="todo">Phone TBA</span>']);
     if (full) {
@@ -269,7 +269,6 @@
             "</div>" +
             socialsHTML() + payHTML() +
           "</div>" +
-          "<div>" + contactHTML() + "</div>" +
         "</div>" +
         '<p class="site-footer__legal">A Canadian brand. Ships to Canada only. Prices in Canadian dollars. Times are Halifax time.</p>' +
         "</div>";
@@ -806,8 +805,6 @@
   /* ---------------- policy page ---------------- */
 
   function renderPolicy() {
-    var c = $("#policy-contact");
-    if (c) c.innerHTML = contactHTML(true);
     renderShippingLines($("#policy-ship"), null);
     var s = $("#policy-delivery");
     if (s) {

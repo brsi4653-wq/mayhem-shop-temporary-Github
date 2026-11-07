@@ -19,29 +19,10 @@ window.MAYHEM = {
      The email and phone are split into pieces on purpose, so basic
      scraper bots can't read them straight out of this file.
      ------------------------------------------------------------------ */
-  contact: {
-    name: "Simon Brookes",
-    emailUser: "simon_j_brookes",
-    emailDomain: "icloud.com",
-    phone: ["902", "899", "9245"],
-
-    // Your address. Nova Scotia's internet sales rules require it.
-    // To keep it as hidden as the law allows, the site:
-    //  - shows it ONLY on the policy page (linked from every buy button),
-    //    not in the footer of every page,
-    //  - builds it with JavaScript from these pieces, so basic bots
-    //    don't read it out of the page,
-    //  - tells search engines not to list the policy page.
-    // It still sits in this file, and the GitHub repo is public.
-    // Nothing shows until every piece is filled in.
-    address: {
-      number: "4",
-      street: "Aster Place",
-      town: "Truro",
-      province: "NS",
-      postal: "B2N 5X1"
-    }
-  },
+  // Contact details are off the site for now (not selling yet).
+  // When sales open, add them back here: name, email, phone and the
+  // address Nova Scotia's internet sales rules require.
+  contact: null,
 
   /* ------------------------------------------------------------------
      SOCIALS
